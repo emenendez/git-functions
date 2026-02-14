@@ -56,24 +56,12 @@ gclone() {
 
 # gt - Fuzzy-find and navigate to a git repository under ~/git
 gt() {
-    # Check if fzf is installed
-    if ! command -v fzf &> /dev/null; then
-        echo "Error: fzf is not installed. Please install fzf to use this command."
-        return 1
-    fi
-
     local git_base="$HOME/git"
-
-    # Check if git base directory exists
-    if [ ! -d "$git_base" ]; then
-        echo "Error: $git_base directory does not exist"
-        return 1
-    fi
 
     # Find all git repositories (directories containing .git)
     # Remove the git_base prefix and .git suffix for cleaner display
     local selected
-    selected=$(find "$git_base" -type d -name ".git" 2>/dev/null | \
+    selected=$(fd --type d --max-depth 4 --no-ignore --hidden '^\.git$' "$git_base" 2>/dev/null | \
         sed "s|$git_base/||; s|/.git$||" | \
         fzf --height 40% --reverse --prompt "Select repository: ")
 
