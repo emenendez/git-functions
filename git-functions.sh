@@ -61,8 +61,8 @@ gt() {
     # Find all git repositories (directories containing .git)
     # Remove the git_base prefix and .git suffix for cleaner display
     local selected
-    selected=$(fd --type d --max-depth 4 --no-ignore --hidden '^\.git$' "$git_base" 2>/dev/null | \
-        sed "s|$git_base/||; s|/.git$||" | \
+    selected=$(fd --type d --max-depth 4 --no-ignore --hidden --prune '^\.git$' "$git_base" 2>/dev/null | \
+        sed -E "s|$git_base/||; s|/.git/?$||" | \
         fzf --height 40% --reverse --prompt "Select repository: ")
 
     # Check if user cancelled (empty selection)
