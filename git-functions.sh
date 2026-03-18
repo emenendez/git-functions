@@ -53,6 +53,7 @@ gclone() {
         return 1
     fi
 }
+export -f gclone
 
 # gt - Fuzzy-find and navigate to a git repository under ~/git
 gt() {
@@ -80,45 +81,72 @@ gt() {
         return 1
     fi
 }
+export -f gt
 
+# gc - git commit
+gc() {
+    git commit "$@"
+}
+export -f gc
 
-alias gc="git commit"
-alias gs="git status"
-alias gb="git branch"
-alias gd="git diff"
+# gs - git status
+gs() {
+    git status "$@"
+}
+export -f gs
 
-function gcb {
+# gb - git branch
+gb() {
+    git branch "$@"
+}
+export -f gb
+
+# gd - git diff
+gd() {
+    git diff "$@"
+}
+export -f gd
+
+# gcb - Checkout a branch (fuzzy-find if no argument given)
+gcb() {
     if [ -z "${1}" ]; then
         git checkout "$(git for-each-ref --format='%(refname:short)' refs/heads/ | fzy)"
     else
         git checkout "${1}"
     fi
 }
+export -f gcb
 
-# Create a new local branch
-function fb() {
-  git pull
-  git checkout -b "$1"
+# fb - Create a new local branch
+fb() {
+    git pull
+    git checkout -b "$1"
 }
+export -f fb
 
-function pushb() {
+# pushb - Push current branch and set upstream
+pushb() {
     git push --set-upstream origin "$(git rev-parse --abbrev-ref HEAD)"
 }
+export -f pushb
 
-function mergeb() {
+# mergeb - Switch to previous branch, pull, and delete the branch you were on
+mergeb() {
     BRANCH=$(git branch --show-current)
     git checkout -
     git pull
     git branch -D "$BRANCH"
 }
+export -f mergeb
 
-# Delete a local branch and also delete it from origin
-function gitd() {
-  echo "Do you really want to delete branch $1 everywhere?"
+# gitd - Delete a local branch and also delete it from origin
+gitd() {
+    echo "Do you really want to delete branch $1 everywhere?"
     select yn in "Yes" "No"; do
-    case $yn in
-      Yes ) git branch -D "$1" && git push origin --delete "$1"; break;;
-      No ) exit;;
-  esac
+        case $yn in
+            Yes ) git branch -D "$1" && git push origin --delete "$1"; break;;
+            No ) exit;;
+        esac
     done
 }
+export -f gitd
